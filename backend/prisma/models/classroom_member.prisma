@@ -1,0 +1,24 @@
+// ============================================================================
+// 11. Classrooms — Members
+// ============================================================================
+
+enum ClassroomMemberStatus {
+  PENDING
+  ACTIVE
+  REMOVED
+}
+
+model ClassroomMember {
+  id          String                @id @default(uuid())
+  classroomId String                @map("classroom_id")
+  userId      String                @map("user_id")
+  joinedAt    DateTime              @default(now()) @map("joined_at")
+  status      ClassroomMemberStatus @default(ACTIVE)
+
+  classroom Classroom @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([classroomId, userId])
+  @@index([userId])
+  @@map("classroom_members")
+}

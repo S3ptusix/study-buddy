@@ -1,0 +1,39 @@
+// ============================================================================
+// 15. AI system
+// ============================================================================
+
+enum AiJobType {
+  GENERATE_REVIEWER
+  GENERATE_QUIZ
+  GENERATE_SUMMARY
+  GENERATE_FLASHCARDS
+}
+
+enum AiJobStatus {
+  QUEUED
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model AiJob {
+  id               String      @id @default(uuid())
+  userId           String      @map("user_id")
+  type             AiJobType
+  sourceMaterialId String?     @map("source_material_id")
+  status           AiJobStatus @default(QUEUED)
+  provider         String?
+  model            String?
+  inputTokens      Int?        @map("input_tokens")
+  outputTokens     Int?        @map("output_tokens")
+  errorMessage     String?     @map("error_message")
+  createdAt        DateTime    @default(now()) @map("created_at")
+  completedAt      DateTime?   @map("completed_at")
+
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sourceMaterial Material? @relation(fields: [sourceMaterialId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([status])
+  @@map("ai_jobs")
+}

@@ -1,0 +1,34 @@
+// ============================================================================
+// 7. Study materials
+// ============================================================================
+
+enum ProcessingStatus {
+  UPLOADED
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model Material {
+  id               String            @id @default(uuid())
+  ownerId          String            @map("owner_id")
+  title            String
+  description      String?
+  fileUrl          String            @map("file_url")
+  fileType         String            @map("file_type")
+  fileSize         Int               @map("file_size")
+  visibility       ContentVisibility @default(PRIVATE)
+  processingStatus ProcessingStatus  @default(UPLOADED) @map("processing_status")
+  createdAt        DateTime          @default(now()) @map("created_at")
+  updatedAt        DateTime          @updatedAt @map("updated_at")
+
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  posts       Post[]
+  reviewers   Reviewer[]
+  assignments Assignment[]
+  aiJobs      AiJob[]
+
+  @@index([ownerId])
+  @@map("materials")
+}

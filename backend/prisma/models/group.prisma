@@ -1,0 +1,25 @@
+// ============================================================================
+// 13. Groups
+// ============================================================================
+
+enum GroupPrivacy {
+  PUBLIC
+  PRIVATE
+}
+
+model Group {
+  id          String       @id @default(uuid())
+  ownerId     String       @map("owner_id")
+  name        String
+  description String?
+  privacy     GroupPrivacy @default(PUBLIC)
+  createdAt   DateTime     @default(now()) @map("created_at")
+
+  owner User @relation("GroupOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+
+  members  GroupMember[]
+  messages Message[]
+
+  @@index([ownerId])
+  @@map("groups")
+}

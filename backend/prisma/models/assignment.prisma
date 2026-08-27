@@ -1,0 +1,30 @@
+// ============================================================================
+// 12. Assignments
+// ============================================================================
+
+model Assignment {
+  id          String  @id @default(uuid())
+  classroomId String  @map("classroom_id")
+  creatorId   String  @map("creator_id")
+  title       String
+  description String?
+
+  quizId     String? @map("quiz_id")
+  materialId String? @map("material_id")
+
+  dueAt       DateTime? @map("due_at")
+  maxAttempts Int?      @map("max_attempts")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  classroom Classroom @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  creator   User      @relation("AssignmentCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+  quiz      Quiz?     @relation(fields: [quizId], references: [id], onDelete: SetNull)
+  material  Material? @relation(fields: [materialId], references: [id], onDelete: SetNull)
+
+  submissions AssignmentSubmission[]
+
+  @@index([classroomId])
+  @@index([creatorId])
+  @@map("assignments")
+}

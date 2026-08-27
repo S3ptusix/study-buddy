@@ -1,0 +1,17 @@
+// ============================================================================
+// 8. Reviewers — Cards
+// ============================================================================
+
+model ReviewerCard {
+  id         String   @id @default(uuid())
+  reviewerId String   @map("reviewer_id")
+  question   String
+  answer     String
+  position   Int
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  reviewer Reviewer @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
+
+  @@index([reviewerId])
+  @@map("reviewer_cards")
+}

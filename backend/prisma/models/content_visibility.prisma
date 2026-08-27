@@ -1,0 +1,10 @@
+// ============================================================================
+// Shared enum used by Material, Reviewer, and Quiz visibility fields
+// ============================================================================
+
+enum ContentVisibility {
+  PUBLIC
+  FOLLOWERS
+  GROUP
+  PRIVATE
+}

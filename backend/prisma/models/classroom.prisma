@@ -1,0 +1,21 @@
+// ============================================================================
+// 11. Classrooms
+// ============================================================================
+
+model Classroom {
+  id          String   @id @default(uuid())
+  teacherId   String   @map("teacher_id")
+  name        String
+  description String?
+  classCode   String   @unique @map("class_code")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  teacher User @relation("ClassroomTeacher", fields: [teacherId], references: [id], onDelete: Cascade)
+
+  members     ClassroomMember[]
+  assignments Assignment[]
+
+  @@index([teacherId])
+  @@map("classrooms")
+}

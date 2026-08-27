@@ -1,0 +1,38 @@
+// ============================================================================
+// 6. Social system — Posts
+// ============================================================================
+
+enum PostVisibility {
+  PUBLIC
+  FOLLOWERS
+  GROUP
+  PRIVATE
+}
+
+model Post {
+  id         String         @id @default(uuid())
+  userId     String         @map("user_id")
+  content    String
+  visibility PostVisibility @default(PUBLIC)
+  createdAt  DateTime       @default(now()) @map("created_at")
+  updatedAt  DateTime       @updatedAt @map("updated_at")
+
+  // Optional references to other content (candidate for a future
+  // polymorphic/attachment model rather than nullable FK columns)
+  reviewerId String? @map("reviewer_id")
+  quizId     String? @map("quiz_id")
+  materialId String? @map("material_id")
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reviewer Reviewer? @relation(fields: [reviewerId], references: [id], onDelete: SetNull)
+  quiz     Quiz?     @relation(fields: [quizId], references: [id], onDelete: SetNull)
+  material Material? @relation(fields: [materialId], references: [id], onDelete: SetNull)
+
+  comments Comment[]
+  likes    PostLike[]
+  saves    PostSave[]
+
+  @@index([userId])
+  @@index([visibility])
+  @@map("posts")
+}

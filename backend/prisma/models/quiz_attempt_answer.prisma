@@ -1,0 +1,21 @@
+// ============================================================================
+// 10. Quiz attempts — Answers
+// ============================================================================
+
+model QuizAttemptAnswer {
+  id               String   @id @default(uuid())
+  attemptId        String   @map("attempt_id")
+  questionId       String   @map("question_id")
+  selectedChoiceId String?  @map("selected_choice_id")
+  answerText       String?  @map("answer_text")
+  isCorrect        Boolean? @map("is_correct")
+  pointsEarned     Float?   @map("points_earned")
+
+  attempt        QuizAttempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question       QuizQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  selectedChoice QuizChoice?  @relation("SelectedChoice", fields: [selectedChoiceId], references: [id], onDelete: SetNull)
+
+  @@index([attemptId])
+  @@index([questionId])
+  @@map("quiz_attempt_answers")
+}

@@ -1,0 +1,27 @@
+// ============================================================================
+// 9. Quizzes — Questions
+// ============================================================================
+
+enum QuestionType {
+  MULTIPLE_CHOICE
+  TRUE_FALSE
+  IDENTIFICATION
+  MULTIPLE_ANSWER
+}
+
+model QuizQuestion {
+  id           String       @id @default(uuid())
+  quizId       String       @map("quiz_id")
+  question     String
+  questionType QuestionType @map("question_type")
+  explanation  String?
+  points       Int          @default(1)
+  position     Int
+
+  quiz    Quiz                @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  choices QuizChoice[]
+  answers QuizAttemptAnswer[]
+
+  @@index([quizId])
+  @@map("quiz_questions")
+}

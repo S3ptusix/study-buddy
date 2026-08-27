@@ -1,0 +1,42 @@
+// ============================================================================
+// 9. Quizzes
+// ============================================================================
+
+enum QuizStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model Quiz {
+  id          String            @id @default(uuid())
+  ownerId     String            @map("owner_id")
+  title       String
+  description String?
+  visibility  ContentVisibility @default(PRIVATE)
+
+  attemptLimit     Int? @map("attempt_limit")
+  timeLimitSeconds Int? @map("time_limit_seconds")
+
+  availableFrom  DateTime? @map("available_from")
+  availableUntil DateTime? @map("available_until")
+
+  showAnswers        Boolean @default(false) @map("show_answers")
+  randomizeQuestions Boolean @default(false) @map("randomize_questions")
+  randomizeChoices   Boolean @default(false) @map("randomize_choices")
+
+  status QuizStatus @default(DRAFT)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  questions   QuizQuestion[]
+  attempts    QuizAttempt[]
+  posts       Post[]
+  assignments Assignment[]
+
+  @@index([ownerId])
+  @@map("quizzes")
+}

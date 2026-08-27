@@ -1,0 +1,15 @@
+// ============================================================================
+// 14. Chat — Attachments
+// ============================================================================
+
+model MessageAttachment {
+  id        String @id @default(uuid())
+  messageId String @map("message_id")
+  fileUrl   String @map("file_url")
+  fileType  String @map("file_type")
+
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@index([messageId])
+  @@map("message_attachments")
+}

@@ -1,0 +1,28 @@
+// ============================================================================
+// 12. Assignments — Submissions
+// ============================================================================
+
+enum AssignmentSubmissionStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  SUBMITTED
+  LATE
+  GRADED
+}
+
+model AssignmentSubmission {
+  id            String                     @id @default(uuid())
+  assignmentId  String                     @map("assignment_id")
+  userId        String                     @map("user_id")
+  quizAttemptId String?                    @map("quiz_attempt_id")
+  status        AssignmentSubmissionStatus @default(NOT_STARTED)
+  submittedAt   DateTime?                  @map("submitted_at")
+
+  assignment  Assignment   @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quizAttempt QuizAttempt? @relation(fields: [quizAttemptId], references: [id], onDelete: SetNull)
+
+  @@unique([assignmentId, userId])
+  @@index([userId])
+  @@map("assignment_submissions")
+}

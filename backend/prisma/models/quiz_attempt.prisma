@@ -1,0 +1,33 @@
+// ============================================================================
+// 10. Quiz attempts
+// ============================================================================
+
+enum AttemptStatus {
+  IN_PROGRESS
+  SUBMITTED
+  EXPIRED
+  ABANDONED
+}
+
+model QuizAttempt {
+  id            String        @id @default(uuid())
+  quizId        String        @map("quiz_id")
+  userId        String        @map("user_id")
+  attemptNumber Int           @map("attempt_number")
+  startedAt     DateTime      @default(now()) @map("started_at")
+  submittedAt   DateTime?     @map("submitted_at")
+  score         Float?
+  percentage    Float?
+  status        AttemptStatus @default(IN_PROGRESS)
+
+  quiz Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  answers               QuizAttemptAnswer[]
+  assignmentSubmissions AssignmentSubmission[]
+
+  @@unique([quizId, userId, attemptNumber])
+  @@index([quizId])
+  @@index([userId])
+  @@map("quiz_attempts")
+}

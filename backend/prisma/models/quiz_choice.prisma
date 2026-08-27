@@ -1,0 +1,17 @@
+// ============================================================================
+// 9. Quizzes — Choices
+// ============================================================================
+
+model QuizChoice {
+  id         String  @id @default(uuid())
+  questionId String  @map("question_id")
+  text       String
+  isCorrect  Boolean @default(false) @map("is_correct")
+  position   Int
+
+  question          QuizQuestion        @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  selectedInAnswers QuizAttemptAnswer[] @relation("SelectedChoice")
+
+  @@index([questionId])
+  @@map("quiz_choices")
+}
