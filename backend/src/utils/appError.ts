@@ -1,10 +1,13 @@
+import { ErrorCode } from "../types/error.js";
+
 export class AppError extends Error {
-    statusCode: number;
-
-    constructor(message: string, statusCode: number) {
+    constructor(
+        public message: string,
+        public statusCode: number,
+        public code?: ErrorCode,
+        public data?: Record<string, unknown>
+    ) {
         super(message);
-
-        this.statusCode = statusCode;
         this.name = "AppError";
     }
 }

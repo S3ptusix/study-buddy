@@ -6,5 +6,6 @@ export function useMe() {
         queryKey: ["user"],
         queryFn: getMe,
         retry: false,
+        refetchOnWindowFocus: false,
     });
 }

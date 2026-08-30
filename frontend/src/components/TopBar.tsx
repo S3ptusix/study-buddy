@@ -2,7 +2,7 @@ import { Button } from "./ui/button";
 import studyBuddyIcon from "../assets/study-buddy-icon.svg"
 import { useNavigate } from "react-router-dom";
 
-export default function NavBar() {
+export default function TopBar() {
 
     const navigate = useNavigate();
 
@@ -16,12 +16,8 @@ export default function NavBar() {
             name: "How it works",
         },
         {
-            path: "student",
-            name: "Student",
-        },
-        {
-            path: "teacher",
-            name: "Teacher",
+            path: "features",
+            name: "Features",
         },
     ];
 

@@ -5,6 +5,7 @@ import helmet from "helmet";
 import { errorHandler } from "./middleware/error.middleware.js";
 import authRouter from "./routes/auth.routes.js";
 import cookieParser from "cookie-parser";
+import { connectRedis } from "./lib/redis.js";
 
 const port = process.env.PORT;
 
@@ -33,6 +34,8 @@ app.use((req, res) => {
 
 // Error handler — should be last
 app.use(errorHandler);
+
+await connectRedis();
 
 app.listen(port, () => {
     console.log(`Listening on port: ${port}`);

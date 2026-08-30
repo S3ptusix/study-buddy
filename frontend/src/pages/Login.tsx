@@ -1,6 +1,5 @@
 import { Link, useNavigate } from "react-router-dom"
 import studyBuddyIcon from "../assets/study-buddy-icon.svg"
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
@@ -12,8 +11,12 @@ import { getMe, login as loginUser } from "@/services/auth.service"
 import { toast } from "@/components/ui/toast";
 import axios from "axios";
 import { store } from "@/utils/store";
+import type { ApiError } from "@/types/error";
+import { useState } from "react";
+import VerifyEmail from "@/components/VerifyEmail";
+import ForgotPassword from "@/components/ForgotPassword";
 
-const formSchema = z
+const loginFields = z
     .object({
         credential: z
             .string()
@@ -24,7 +27,7 @@ const formSchema = z
             .min(1, "Password is required."),
     })
 
-export type LoginFields = z.infer<typeof formSchema>
+export type LoginFields = z.infer<typeof loginFields>
 
 export default function Login() {
 
@@ -33,22 +36,20 @@ export default function Login() {
 
     const navigate = useNavigate();
 
+    const [openVerifyEmail, setOpenVerifyEmail] = useState(false);
+    const [openForgotPassword, setOpenForgotPassword] = useState(false);
+
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm<LoginFields>({
-        resolver: zodResolver(formSchema),
+        resolver: zodResolver(loginFields),
         defaultValues: {
             credential: "",
             password: "",
         },
     })
-
-    type ApiError = {
-        message: string;
-        errors?: Record<string, string>;
-    };
 
     const loginMutation = useMutation({
         mutationFn: loginUser,
@@ -66,12 +67,17 @@ export default function Login() {
 
         onError: (error) => {
             if (axios.isAxiosError<ApiError>(error)) {
-                const message = error.response?.data.message;
+
+                const err = error.response?.data;
+
+                if (err?.code && err?.code === "EMAIL_NOT_VERIFIED") {
+                    return setOpenVerifyEmail(true);
+                }
 
                 toast.add({
                     type: "error",
                     title: "Registration failed",
-                    description: message ?? "Something went wrong. Please try again.",
+                    description: err?.message ?? "Something went wrong. Please try again.",
                 })
 
                 console.log("Errors:", error.response?.data.errors);
@@ -87,31 +93,31 @@ export default function Login() {
     }
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center space-y-8 bg-muted">
+        <>
+            <div className="min-h-screen flex flex-col items-center justify-center space-y-8 px-[5vw] py-20">
 
-            <div
-                className="flex items-center gap-2 cursor-pointer"
-                onClick={() => navigate('/')}
-            >
-                <div className="h-12 aspect-square">
-                    <img
-                        src={studyBuddyIcon}
-                        className="h-full w-full"
-                    />
+                <div
+                    className="flex items-center gap-2 cursor-pointer"
+                    onClick={() => navigate('/')}
+                >
+                    <div className="h-12 aspect-square">
+                        <img
+                            src={studyBuddyIcon}
+                            className="h-full w-full"
+                        />
+                    </div>
+                    <p className="font-semibold">
+                        StudyBuddy
+                    </p>
                 </div>
-                <p className="font-semibold">
-                    StudyBuddy
-                </p>
-            </div>
 
-            <div className="text-center">
-                <p className="text-xl font-semibold">Create your account</p>
+                <div className="text-center">
+                    <p className="text-xl font-semibold">Create your account</p>
 
-                <p className="text-sm text-muted-foreground">Join thousands of learners on StudyBuddy</p>
-            </div>
+                    <p className="text-sm text-muted-foreground">Join thousands of learners on StudyBuddy</p>
+                </div>
 
-            <Card className="w-full max-w-sm">
-                <CardContent>
+                <div className="w-full max-w-sm">
                     <form
                         id="login-form"
                         onSubmit={handleSubmit(onSubmit)}
@@ -146,26 +152,26 @@ export default function Login() {
                                         {errors.password.message}
                                     </FieldError>
                                 )}
-                                <p className="text-xs cursor-pointer hover:underline">Forgot password?</p>
+                                <p className="text-xs cursor-pointer hover:underline" onClick={() => setOpenForgotPassword(true)}>Forgot password?</p>
                             </Field>
-
-
+                            <Button
+                                type="submit"
+                                form="login-form"
+                                className="w-full"
+                                disabled={loginMutation.isPending}
+                            >
+                                {loginMutation.isPending ? "Logging in..." : "Login"}
+                            </Button>
                         </div>
                     </form>
-                </CardContent>
-                <CardFooter className="flex-col gap-2">
-                    <Button
-                        type="submit"
-                        form="login-form"
-                        className="w-full"
-                    >
-                        Log in
-                    </Button>
-                </CardFooter>
-            </Card>
-            <p className="text-sm text-muted-foreground">
-                Don't have an account? <Link to="/register" className="text-foreground">Sign up</Link>
-            </p>
-        </div>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                    Don't have an account? <Link to="/register" className="text-foreground">Sign up</Link>
+                </p>
+            </div>
+
+            {openVerifyEmail && <VerifyEmail />}
+            {openForgotPassword && <ForgotPassword />}
+        </>
     )
 }

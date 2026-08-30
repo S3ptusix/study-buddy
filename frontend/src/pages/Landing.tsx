@@ -1,16 +1,16 @@
-import NavBar from "@/components/NavBar";
+import TopBar from "@/components/TopBar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
-
+// import { motion } from "motion/react";
 export default function Landing() {
 
     const navigate = useNavigate();
 
     return (
         <div>
-            <NavBar />
-            <section className="px-[15vw] py-20 space-y-16 flex flex-col items-center bg-muted">
+            <TopBar />
+            <section className="px-[15vw] py-20 space-y-16 flex flex-col items-center">
                 <p>
                     ✦ AI-Powered Learning Platform
                 </p>
@@ -39,17 +39,12 @@ export default function Landing() {
                 <h1>feature</h1>
             </section>
 
-            <section id="how-it-works" className="h-screen px-[5vw] bg-muted">
+            <section id="how-it-works" className="h-screen px-[5vw]">
                 <h1>How it Works</h1>
             </section>
 
-            <section className="h-screen px-[5vw]">
-                <div id="student">
-                    <h1>Student</h1>
-                </div>
-                <div id="teacher">
-                    <h1>Teacher</h1>
-                </div>
+            <section id="features" className="h-screen px-[5vw]">
+                <h1>Features</h1>
             </section>
         </div>
     )

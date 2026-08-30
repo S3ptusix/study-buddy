@@ -5,12 +5,18 @@ import Login from "./pages/Login"
 import ProtectedRoute from "./components/ProtectedRoute"
 import Dashboard from "./pages/Dashboard"
 import GuestRoute from "./components/GuestRoute"
+import ResetPassword from "./pages/ResetPassword"
+import ResetRoute from "./components/ResetRoute"
 
 function App() {
 
 
   return (
     <Routes>
+      <Route element={<ResetRoute />}>
+        <Route path="/reset-password" element={<ResetPassword />} />
+      </Route>
+
       <Route element={<GuestRoute />}>
         <Route path="/" element={<Landing />} />
         <Route path="/register" element={<Register />} />
@@ -20,6 +26,7 @@ function App() {
       <Route element={<ProtectedRoute />}>
         <Route path="/app/dashboard" element={<Dashboard />} />
       </Route>
+
     </Routes>
   )
 }
